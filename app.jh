@@ -1,0 +1,74 @@
+application {
+  config {
+    baseName gateway 
+    reactive true
+    applicationType gateway 
+    packageName com.ahmedmeid.fleet
+    serviceDiscoveryType consul
+    authenticationType oauth2
+    prodDatabaseType postgresql
+    cacheProvider redis
+    buildTool maven
+    clientFramework react
+    testFrameworks [cypress]
+    enableTranslation true
+    nativeLanguage en
+    languages [en, ar-ly]
+  }
+  entities Customer, Vehicle
+}
+
+application {
+  config {
+    baseName customerManagement
+    reactive true
+    applicationType microservice
+    packageName com.ahmedmeid.fleet
+    serviceDiscoveryType consul
+    authenticationType oauth2
+    prodDatabaseType postgresql
+    messageBroker kafka
+    buildTool maven
+    serverPort 8081
+    skipUserManagement true
+    enableTranslation true
+    nativeLanguage en
+    languages [en, ar-ly]
+  }
+  entities Customer, Vehicle
+}
+
+application {
+  config {
+    baseName vehicleData
+    reactive true
+    applicationType microservice
+    packageName com.ahmedmeid.fleet
+    serviceDiscoveryType consul
+    authenticationType oauth2
+    databaseType no
+    messageBroker kafka
+    buildTool maven
+    serverPort 8082
+    skipUserManagement true
+    enableTranslation true
+    nativeLanguage en
+    languages [en, ar-ly]
+  }
+}
+
+entity Customer {
+    name String required
+    address String
+}
+
+entity Vehicle {
+    vehicleId String unique required
+    vehicleRegNo String unique required
+}
+
+relationship ManyToOne {
+    Vehicle{owner(name) required} to Customer
+}
+
+microservice Customer, Vehicle with customerManagement
